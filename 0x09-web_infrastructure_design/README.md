@@ -47,3 +47,23 @@ The server uses the Hypertext Transfer Protocol (HTTP) to communicate with the u
     - Security issues (no firewall, no HTTPS): Our servers are at risk of unauthorized access without a firewall, and our servers is not secure or encrypted when HTTPS is not used.
     - No monitoring: Without monitoring, there is no way to proactively identify performance issues prolonging downtime in case of issues.
 
+## Task 2:
+
+- Why additional elements? The addition of a firewall enhances security by preventing unauthorized access, the SSL certificate enables HTTPS encryption, Monitoring tools ensures optimal performance, and minimizes downtime.
+
+- Firewalls?  are security mechanisms that control and filter network traffic.
+
+- HTTPS Traffic? HTTPS encrypts data transmitted between users and servers, ensuring secure communication and protecting sensitive information from interception.
+
+- Monitoring? Monitoring is used to analyze the performance usage of systems and applications, allowing for quick identification and resolution of issues.
+
+- Data Collection in Monitoring? Monitoring tools collect data by periodically querying and analyzing various system metrics, logs, and performance indicators to generate reports and alerts.
+
+- Monitoring Web Server QPS? To monitor web server QPS (Queries Per Second), we can use monitoring tools to track the number of requests the server receives per second and analyze its performance under varying loads.
+
+- Issues:
+    - Terminating SSL at Load Balancer Level: Decrypting data at the load balancer and forwarding it to backend servers can expose sensitive information within the internal network.
+    - Single MySQL Server Accepting Writes: Having only one MySQL server for write operations creates a single point of failure, risking data loss and service downtime during server issues.
+    - Servers with Identical Components: Using servers with the same components increases the risk of failures due to a lack of diversity and redundancy in the infrastructure.
+
+
