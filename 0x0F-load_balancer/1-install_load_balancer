@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#Install and configure HAproxy on lb-01 server
+
+# Update the package list
+sudo apt-get update
+
+# Install HAProxy 2.4 from the PPA
+sudo apt-get install -y --no-install-recommends software-properties-common
+sudo add-apt-repository -y ppa:vbernat/haproxy-2.8
+sudo apt-get -y update
+sudo apt-get install -y haproxy=2.8.\*
+
+# Create a backup of the original HAProxy configuration
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
+
+# Edit the HAProxy configuration
+cat <<EOL | sudo tee /etc/haproxy/haproxy.cfg > /dev/null
+frontend haproxy_balancer
+    bind *:80
+    mode http
+    default_backend back
+
+backend back
+    balance roundrobin
+    server 294762-web-01 52.86.193.42:80 check
+    server 294762-web-02 52.86.161.66:80 check
+EOL
+
+# Enable HAProxy to start automatically
+echo 'ENABLED=1' | sudo tee -a /etc/default/haproxy > /dev/null
+
+sudo service haproxy restart
