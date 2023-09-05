@@ -28,7 +28,6 @@ backend back
 
 echo "$config" | sudo tee -a /etc/haproxy/haproxy.cfg > /dev/null
 
-# Enable HAProxy to start automatically
-echo 'ENABLED=1' | sudo tee -a /etc/default/haproxy > /dev/null
+sudo systemctl enable haproxy
 
 sudo service haproxy restart
