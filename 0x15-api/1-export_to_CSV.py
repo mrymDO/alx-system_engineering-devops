@@ -1,29 +1,21 @@
 #!/usr/bin/python3
-"""
-Exports to CSV
-"""
+"""Exports to CSV"""
 
-import csv
-import requests
-import sys
+from requests import get
+from sys import argv
 
 
 if __name__ == '__main__':
-    employee_id = sys.argv[1]
-
-    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    todo_url = (
-            f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
-            )
-
-    response = requests.get(user_url)
+    user_id = argv[1]
+    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
+    response = get(url)
     username = response.json().get('username')
 
-    response = requests.get(todo_url)
-    todo = response.json()
-    with open(f"{employee_id}.csv", "w", newline='') as csvfile:
-        csv_writer = csv.writer(csvfile)
-        for task in todo:
-            completed = task.get('completed')
-            title = task.get('title')
-            csv_writer.writerow([employee_id, username, completed, title])
+    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(user_id)
+    response = get(url)
+    tasks = response.json()
+    with open('{}.csv'.format(user_id), 'w') as file:
+        for task in tasks:
+            file.write('"{}","{}","{}","{}"\n'
+                       .format(user_id, username, task.get('completed'),
+                               task.get('title')))
