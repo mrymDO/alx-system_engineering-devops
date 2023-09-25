@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""gets information about a specific employee's TODO list"""
+"""Gather data from an API"""
 
 import requests
 import sys
