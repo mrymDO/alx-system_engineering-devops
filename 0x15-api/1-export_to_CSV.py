@@ -1,85 +1,29 @@
 #!/usr/bin/python3
-"""Get user todos"""
+"""
+Exports to CSV
+"""
+
+import csv
 import requests
-from requests.exceptions import HTTPError
-from sys import argv
+import sys
 
 
-FILE_OUTPUT_NAME = "{}.csv"
+if __name__ == '__main__':
+    employee_id = sys.argv[1]
 
+    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    todo_url = (
+            f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
+            )
 
-def get_user(id):
-    """Get user by id"""
-    response = requests.get(f"https://jsonplaceholder.typicode.com/users/{id}")
-    if response.status_code != 200:
-        raise HTTPError(f'HTTP Error: {response.status_code}')
-    return response.json()
+    response = requests.get(user_url)
+    username = response.json().get('username')
 
-
-def get_todos_by_user_id(id):
-    """Get User todos"""
-    response = requests.get(f"https://jsonplaceholder.typicode.com/todos")
-    if response.status_code != 200:
-        raise HTTPError(f'HTTP Error: {response.status_code}')
-    todos = response.json()
-    result = []
-    completed = []
-    for todo in todos:
-        if todo['userId'] == id:
-            result.append(todo)
-            if todo['completed']:
-                completed.append(todo)
-    return {
-        'todos': result,
-        'completed': completed
-    }
-
-
-def print_user_todos(user, todos):
-    """print user todos"""
-    text = "Employee {} is done with tasks({}/{}):\n"
-    name = user['name']
-    completed = todos['completed']
-    todosList = todos['todos']
-    result = text.format(name, len(completed), len(todosList))
-    for todo in completed:
-        result += f"\t {todo['title']}\n"
-    print(result)
-
-
-def to_csv_format(user, todos):
-    result = ""
-    text = '"{}","{}","{}","{}"\n'
-    for todo in todos:
-        result += text.format(user['id'], user['username'],
-                              todo['completed'], todo['title'])
-    return result[0: -1]
-
-
-def save_file(content, user_id):
-    with open(FILE_OUTPUT_NAME.format(user_id), "w") as f:
-        f.write(content)
-
-
-def main():
-    """entry point"""
-    if len(argv) != 2:
-        print("Usage: python3 0-gather_data_from_an_API.py ID ")
-        exit()
-
-    id = argv[1]
-
-    try:
-        id = int(id)
-        user = get_user(id)
-        todos = get_todos_by_user_id(id)
-        csv_format = to_csv_format(user, todos['todos'])
-        save_file(csv_format, user['id'])
-    except ValueError:
-        print("id must be integer")
-    except HTTPError:
-        print("something went wrong")
-
-
-if __name__ == "__main__":
-    main()
+    response = requests.get(todo_url)
+    todo = response.json()
+    with open(f"{employee_id}.csv", "w", newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        for task in todo:
+            completed = task.get('completed')
+            title = task.get('title')
+            csv_writer.writerow([employee_id, username, completed, title])
