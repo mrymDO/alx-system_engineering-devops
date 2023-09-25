@@ -3,6 +3,7 @@
 Exports to CSV
 """
 
+import csv
 import requests
 import sys
 
@@ -20,8 +21,9 @@ if __name__ == '__main__':
 
     response = requests.get(todo_url)
     todo = response.json()
-    with open(f"{employee_id}.csv", "w") as csvfile:
+    with open(f"{employee_id}.csv", "w", newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
         for task in todo:
             completed = task.get('completed')
             title = task.get('title')
-            csvfile.write(f"{employee_id}, {username}, {completed}, {title}\n")
+            csv_writer.writerow([employee_id, username, completed, title])
