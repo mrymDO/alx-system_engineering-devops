@@ -21,9 +21,9 @@ if __name__ == '__main__':
 
     response = requests.get(todo_url)
     todo = response.json()
-    with open(f"{employee_id}.csv", "w", newline='') as csvfile:
-        csv_writer = csv.writer(csvfile)
+    with open(f"{employee_id}.csv", 'w') as csvfile:
         for task in todo:
             completed = task.get('completed')
             title = task.get('title')
-            csv_writer.writerow([employee_id, username, completed, title])
+            csvfile.write('"{}","{}","{}","{}"\n'
+                       .format(employee_id, username, completed, title))
