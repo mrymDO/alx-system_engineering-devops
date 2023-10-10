@@ -11,7 +11,7 @@ def recurse(subreddit, hot_list=[], after=None):
         return None
 
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
-    headers = {'User-Agent': 'MyRedditBot/1.0'}
+    headers = {"User-Agent": "My-Agent"}
 
     if after is not None:
         params = {'after': after}
@@ -25,13 +25,13 @@ def recurse(subreddit, hot_list=[], after=None):
 
     else:
         data = response.json()
-        posts = data['data']['children']
+        posts = data.get("data").get("children")
 
         for post in posts:
-            title = post['data']['title']
+            title = post.get("data").get("title")
             hot_list.append(title)
 
-        after = data['data']['after']
+        after = data.get("data").get("after")
         if after is not None:
             return recurse(subreddit, hot_list, after)
         else:
