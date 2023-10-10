@@ -2,13 +2,12 @@
 """1-top_ten"""
 
 import requests
-import json
 
 
 def top_ten(subreddit):
     """print titles of first 10 posts in a subreddit"""
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
-    headers = {'User-Agent': 'MyRedditBot/1.0'}
+    headers = {"User-Agent": "My-Agent"}
     allow_redirects = False
     response = requests.get(
             url, headers=headers, allow_redirects=allow_redirects)
