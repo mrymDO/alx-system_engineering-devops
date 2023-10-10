@@ -2,7 +2,6 @@
 """2-recurse"""
 
 import requests
-import json
 
 
 def recurse(subreddit, hot_list=[], after=None):
@@ -18,7 +17,8 @@ def recurse(subreddit, hot_list=[], after=None):
     else:
         params = {}
 
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(
+            url, headers=headers, params=params, allow_redirects=False)
 
     if response.status_code != 200:
         return None
