@@ -15,10 +15,10 @@ def top_ten(subreddit):
     if response.status_code == 200:
         try:
             data = response.json()
-            posts = data['data']['children'][:10]
+            posts = data.get("data").get("children")[:10]
 
             for post in posts:
-                title = post['data']['title']
+                title = post.get("data").get("title")
                 print(title)
         except KeyError:
             print('None')
