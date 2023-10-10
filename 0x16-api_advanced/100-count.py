@@ -4,18 +4,13 @@
 import requests
 
 
-def count_words(subreddit, word_list, after=None, counts=None):
-    """Count keywords in the titles of hot articles from a subreddit"""
+def count_words(subreddit, word_list, counts=None, after=None):
     if counts is None:
         counts = {}
 
-    if subreddit is None:
-        return
-
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {"User-Agent": "My-Agent"}
-
-    params = {"after": after}
+    params = {"after": after} if after else {}
 
     response = requests.get(
             url, headers=headers, params=params, allow_redirects=False)
@@ -24,21 +19,21 @@ def count_words(subreddit, word_list, after=None, counts=None):
         return
 
     data = response.json()
-    posts = data.get("data").get("children")
+    posts = data.get("data", {}).get("children", [])
 
     for post in posts:
-        title = post.get("data").get("title").lower()
-        for word in word_list:
-            if title.count(word.lower()):
-                if word in counts:
-                    counts[word] += title.count(word.lower())
-                else:
-                    counts[word] = title.count(word.lower())
+        title = post.get("data", {}).get("title", "").lower()
+        for keyword in word_list:
+            keyword = keyword.lower()
+            if title.count(keyword):
+                counts[keyword] = counts.get(keyword, 0) + title.count(keyword)
 
-    after = data.get("data").get("after")
-    if after is not None:
-        return count_words(subreddit, word_list, after=after, counts=counts)
+    new_after = data.get("data", {}).get("after")
+    if new_after:
+        return count_words(subreddit, word_list, counts, after=new_after)
 
     sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))
+
     for keyword, count in sorted_counts:
-        print(f"{keyword}: {count}")
+        if count > 0:
+            print(f"{keyword}: {count}")
