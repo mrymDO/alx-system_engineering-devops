@@ -14,7 +14,7 @@ def recurse(subreddit, hot_list=[], after=None):
     headers = {'User-Agent': 'MyRedditBot/1.0'}
 
     if after is not None:
-        params = {'after':after}
+        params = {'after': after}
     else:
         params = {}
 
